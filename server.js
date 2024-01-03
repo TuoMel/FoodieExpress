@@ -1,11 +1,42 @@
 const express = require('express')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const restaurantRouter = require('./api/routes/restaurantRouter')
+
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
+require('dotenv').config()
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+///////////////
+//Middleware//
+//////////////
+app.use(cors())
+app.use(bodyParser.json())
+
+
+////////////
+//Routers//
+///////////
+app.use('/api/restaurants', restaurantRouter);
+
+
+///////////////////
+//Required stuff//
+//////////////////
+async function startServer () {
+    try {
+        await mongoose.connect(process.env.DATABASE_URI)
+
+        console.log('Connected to database')
+
+        app.listen(port, () => {
+            console.log(`Example app listening on port ${port}`)
+        })
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+startServer()
