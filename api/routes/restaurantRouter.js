@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
     );
 });
 
+router.get('/all', restaurantController.getAllRestaurants);
 router.post('/', restaurantController.createRestaurant);
 router.patch('/', restaurantController.modifyRestaurant);
 router.delete('/', restaurantController.deleteRestaurant);
