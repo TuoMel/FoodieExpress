@@ -1,7 +1,7 @@
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
 
-const loginUser = async (email, password) => {
+const login = async (email, password) => {
     try {
         const user = await User.findOne({ email: email }).exec();
 
@@ -21,7 +21,7 @@ const loginUser = async (email, password) => {
     }
 }
 
-const createUser = async (first_name, last_name, email, password, phone) => {
+const register = async (first_name, last_name, email, password, phone) => {
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -48,18 +48,8 @@ const createUser = async (first_name, last_name, email, password, phone) => {
     }
 }
 
-const modifyUser = async () => {
-
-}
-
-const deleteUser = async () => {
-
-}
-
 
 module.exports = {
-    loginUser,
-    createUser,
-    modifyUser,
-    deleteUser
+    login,
+    register
 }

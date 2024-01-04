@@ -1,6 +1,6 @@
-const userService = require('../services/userService');
+const authService = require('../services/authService');
 
-const loginUser = async (req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -8,7 +8,7 @@ const loginUser = async (req, res) => {
     }
 
     try {
-        const result = await userService.loginUser(email, password);
+        const result = await authService.login(email, password);
 
         if (!result.success) {
             return res.status(404).json({ message: "User not found or incorrect password!" });
@@ -22,7 +22,8 @@ const loginUser = async (req, res) => {
     }
 }
 
-const createUser = async (req, res) => {
+
+const register = async (req, res) => {
     const { first_name, last_name, email, password, phone } = req.body;
 
     if (!first_name || !last_name || !email || !password || !phone) {
@@ -30,7 +31,7 @@ const createUser = async (req, res) => {
     }
 
     try {
-        const result = await userService.createUser(first_name, last_name, email, password, phone);
+        const result = await authService.register(first_name, last_name, email, password, phone);
 
         if (!result.success) {
             return res.status(409).json({ message: result.message });
@@ -44,18 +45,8 @@ const createUser = async (req, res) => {
     }
 }
 
-const modifyUser = async (req, res) => {
-
-}
-
-const deleteUser = async (req, res) => {
-
-}
-
 
 module.exports = {
-    loginUser,
-    createUser,
-    modifyUser,
-    deleteUser
+    login,
+    register
 }
