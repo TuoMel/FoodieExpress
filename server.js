@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const restaurantRouter = require('./api/routes/restaurantRouter')
+const userRouter = require('./api/routes/userRouter')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -20,6 +21,7 @@ app.use(bodyParser.json())
 //Routers//
 ///////////
 app.use('/api/restaurants', restaurantRouter);
+app.use('/api/user', userRouter);
 
 
 ///////////////////
