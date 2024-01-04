@@ -16,7 +16,11 @@ const restaurantSchema = new mongoose.Schema({
     email: String,
     website: String,
     rating: Number,
-    hours: Object
+    hours: Object,
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);

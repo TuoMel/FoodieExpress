@@ -23,6 +23,10 @@ const createRestaurant = async (name, address, coordinates, phone, email, websit
             ...(hours != null && { hours })
         });
 
+        if (!newRestaurant) {
+            return { success: false, message: "Error creating a new restaurant!" };
+        }
+
         return { success: true, data: newRestaurant}
     } catch (error) {
         if (error.code === 11000 && error.keyPattern && error.keyPattern.name === 1) {
