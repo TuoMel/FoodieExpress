@@ -2,18 +2,14 @@ const express = require('express');
 const router = express.Router();
 const restaurantController = require('../controllers/restaurantController');
 
-router.get('/', (req, res) => {
-    res.status(200).json(
-        {
-            message: 'Welcome to Restaurant API!'
-        }
-    );
-});
 
-router.get('/all', restaurantController.getAllRestaurants);
+router.get('/', restaurantController.getAllRestaurants);
 router.post('/', restaurantController.createRestaurant);
-router.patch('/', restaurantController.modifyRestaurant);
-router.delete('/', restaurantController.deleteRestaurant);
+
+router.get('/:id', restaurantController.getRestaurant);
+router.patch('/:id/update', restaurantController.modifyRestaurantInfo);
+router.patch('/:id/update/hours', restaurantController.modifyRestaurantHours);
+router.delete('/:id/update', restaurantController.deleteRestaurant);
 
 
 module.exports = router;
