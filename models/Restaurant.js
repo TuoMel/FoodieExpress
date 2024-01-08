@@ -21,6 +21,28 @@ const restaurantSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    timestamps: true
+});
+
+const setDefaultSearchFilter = function(next) {
+    this.where({ isDeleted: false });
+    next();
+};
+
+const setDefaultDeleteFilter = function(next) {
+    this.isDeleted = true;
+    this.save();
+    next();
+};
+
+// Middlewares
+restaurantSchema.pre(['find', 'findOne', 'findOneAndReplace', 'findOneAndUpdate'], setDefaultSearchFilter);
+
+restaurantSchema.pre(['deleteOne', 'findOneAndDelete'], setDefaultDeleteFilter);
+
+restaurantSchema.pre('deleteMany', function(next) {
+    next(new Error('Deletion prevented for deleteMany.'));
 });
 
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);

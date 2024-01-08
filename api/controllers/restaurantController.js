@@ -4,11 +4,11 @@ const getAllRestaurants = async (req, res) => {
     try {
         const result = await restaurantService.getAllRestaurants();
 
-        if (!result) {
-            res.status(500).json({ message: 'Restaurants could not be fetched' });
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
         }
 
-        res.status(200).json({ message: 'Restaurants fetched successfully', data: result.data });
+        res.status(200).json({ message: 'Restaurants fetched successfully!', data: result.data });
     } catch (error) {
         res.status(500).json({
             message: error.message || 'Internal server error'
@@ -16,15 +16,37 @@ const getAllRestaurants = async (req, res) => {
     }
 }
 
-const createRestaurant = async (req, res) => {
-    const { name, address, coordinates, phone, email, website, description, hours } = req.body;
+const getRestaurant = async (req, res) => {
+    const restaurantId = req.params.id;
 
-    if (!name || !address || !coordinates || !phone || !email || !website || !description) {
+    if (!restaurantId) {
         return res.status(400).json({ message: 'Missing required data!' });
     }
 
     try {
-        const result = await restaurantService.createRestaurant(name, address, coordinates, phone, email, website, description, hours);
+        const result = await restaurantService.getRestaurant(restaurantId);
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(200).json({ message: 'Restaurant fetched successfully!', data: result.data });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
+const createRestaurant = async (req, res) => {
+    const { name, description, address, coordinates, phone, email, website, hours } = req.body;
+
+    if (!name || !description) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.createRestaurant(name, description, address, coordinates, phone, email, website, hours);
 
         if (!result.success) {
             return res.status(409).json({ message: result.message });
@@ -38,18 +60,81 @@ const createRestaurant = async (req, res) => {
     }
 }
 
-const modifyRestaurant = async (req, res) => {
-    res.send('Modify Restaurant');
+const modifyRestaurantInfo = async (req, res) => {
+    const restaurantId = req.params.id;
+
+    const { description, address, coordinates, phone, email, website } = req.body;
+
+    if (!restaurantId || !description && !address && !coordinates && !phone && !email && !website) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.modifyRestaurantInfo(restaurantId, description, address, coordinates, phone, email, website);
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(200).json({ message: 'Restaurant info modified successfully!' });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
+const modifyRestaurantHours = async (req, res) => {
+    const restaurantId = req.params.id;
+    const hours = req.body.hours;
+
+    if (!restaurantId || !hours) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.modifyRestaurantHours(restaurantId, hours);
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(200).json({ message: 'Restaurant hours modified successfully!' });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
 }
 
 const deleteRestaurant = async (req, res) => {
-    res.send('Delete Restaurant');
+    const restaurantId = req.params.id;
+
+    if (!restaurantId) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.deleteRestaurant(restaurantId);
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(200).json({ message: 'Restaurant deleted successfully!' });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
 }
 
 
 module.exports = {
     getAllRestaurants,
+    getRestaurant,
     createRestaurant,
-    modifyRestaurant,
+    modifyRestaurantInfo,
+    modifyRestaurantHours,
     deleteRestaurant
 }

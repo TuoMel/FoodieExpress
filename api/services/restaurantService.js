@@ -4,23 +4,41 @@ const getAllRestaurants = async () => {
     try {
         const restaurants = await Restaurant.find({});
 
+        if (!restaurants) {
+            return { success: false, message: "No restaurants found!" };
+        }
+
         return { success: true, data: restaurants };
     } catch (error) {
         throw new Error("Error fetching restaurants!");
     }
 }
 
-const createRestaurant = async (name, address, coordinates, phone, email, website, description, hours) => {
+const getRestaurant = async (restaurantId) => {
+    try {
+        const restaurant = await Restaurant.findById(restaurantId);
+
+        if (!restaurant) {
+            return { success: false, message: "Restaurant not found!" };
+        }
+
+        return { success: true, data: restaurant };
+    } catch (error) {
+        throw new Error("Error fetching the restaurant!");
+    }
+}
+
+const createRestaurant = async (name, description, address, coordinates, phone, email, website, hours) => {
     try {
         const newRestaurant = await Restaurant.create({
             name,
-            address,
-            coordinates,
-            phone,
-            email,
-            website,
             description,
-            ...(hours != null && { hours })
+            ...(address && { address }),
+            ...(coordinates && { coordinates }),
+            ...(phone && { phone }),
+            ...(email && { email }),
+            ...(website && { website }),
+            ...(hours && { hours }),
         });
 
         if (!newRestaurant) {
@@ -37,18 +55,67 @@ const createRestaurant = async (name, address, coordinates, phone, email, websit
     }
 }
 
-const modifyRestaurant = async () => {
+const modifyRestaurantInfo = async (restaurantId, description, address, coordinates, phone, email, website) => {
+    try {
+        const restaurant = await Restaurant.findById(restaurantId);
 
+        if (!restaurant) {
+            return { success: false, message: "Restaurant not found!" };
+        }
+
+        restaurant.description = description || restaurant.description;
+        restaurant.address = address || restaurant.address;
+        restaurant.coordinates = coordinates || restaurant.coordinates;
+        restaurant.phone = phone || restaurant.phone;
+        restaurant.email = email || restaurant.email;
+        restaurant.website = website || restaurant.website;
+
+        await restaurant.save();
+
+        return { success: true, data: restaurant };
+    } catch (error) {
+        throw new Error("Error updating the restaurant info!");
+    }
 }
 
-const deleteRestaurant = async () => {
+const modifyRestaurantHours = async (restaurantId, hours) => {
+    try {
+        const restaurant = await Restaurant.findById(restaurantId);
 
+        if (!restaurant) {
+            return { success: false, message: "Restaurant not found!" };
+        }
+
+        restaurant.hours = hours;
+
+        await restaurant.save();
+
+        return { success: true, data: restaurant };
+    } catch (error) {
+        throw new Error("Error updating the restaurant hours!");
+    }
+}
+
+const deleteRestaurant = async (restaurantId) => {
+    try {
+        const restaurant = await Restaurant.findByIdAndDelete(restaurantId);
+
+        if (!restaurant) {
+            return { success: false, message: "Restaurant not found!" };
+        }
+
+        return { success: true, data: restaurant };
+    } catch (error) {
+        throw new Error("Error deleting the restaurant!");
+    }
 }
 
 
 module.exports = {
     getAllRestaurants,
+    getRestaurant,
     createRestaurant,
-    modifyRestaurant,
+    modifyRestaurantInfo,
+    modifyRestaurantHours,
     deleteRestaurant
 }
