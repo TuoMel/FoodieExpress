@@ -45,8 +45,39 @@ const register = async (req, res) => {
     }
 }
 
+const updatePassword = async (req, res) => {
+    const { userId, oldPassword, newPassword } = req.body;
+
+    if (!userId || !oldPassword || !newPassword) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await authService.updatePassword(userId, oldPassword, newPassword);
+
+        if (!result.success && result.message === 'User not found!') {
+            return res.status(404).json({ message: result.message });
+        }
+
+        if (!result.success && result.message === 'Old password is incorrect!') {
+            return res.status(401).json({ message: result.message });
+        }
+
+        if (!result.success) {
+            return res.status(409).json({ message: result.message });
+        }
+
+        return res.status(200).json({ message: 'Password updated successfully!' });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
 
 module.exports = {
     login,
-    register
+    register,
+    updatePassword
 }
