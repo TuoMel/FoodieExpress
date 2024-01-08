@@ -48,8 +48,36 @@ const register = async (first_name, last_name, email, password, phone) => {
     }
 }
 
+const updatePassword = async (userId, oldPassword, newPassword) => {
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return { success: false, message: 'User not found!' };
+        }
+
+        const oldPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!oldPasswordMatch) {
+            return { success: false, message: 'Old password is incorrect!' };
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return { success: true, message: 'Password updated successfully!' };
+    } catch (error) {
+        throw new Error('Error updating user password!');
+    }
+}
+
 
 module.exports = {
     login,
-    register
+    register,
+    updatePassword
 }

@@ -4,6 +4,9 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const restaurantRouter = require('./api/routes/restaurantRouter')
 const authRouter = require('./api/routes/authRouter')
+const userRouter = require('./api/routes/userRouter')
+const orderRouter = require('./api/routes/orderRouter')
+
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -22,6 +25,8 @@ app.use(bodyParser.json())
 ///////////
 app.use('/api/restaurants', restaurantRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 
 ///////////////////
