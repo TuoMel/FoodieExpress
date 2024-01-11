@@ -21,7 +21,7 @@ const getProfile = async (userId) => {
         const user = await User.findById(userId);
 
         if (!user) {
-            return { success: false, message: 'No user found!' };
+            return { success: false, message: 'User not found!' };
         }
 
         return { success: true, data: user };
@@ -53,11 +53,15 @@ const updateProfile = async (userId, firstName, lastName, email, phone) => {
 
 const deleteUser = async (userId) => {
     try {
-        const user = await User.findByIdAndDelete(userId);
+        const user = await User.findById(userId);
 
         if (!user) {
             return { success: false, message: 'User not found or deleted!' };
         }
+
+        user.isDeleted = true;
+
+        await user.save();
 
         return { success: true, message: 'User deleted!' };
     } catch (error) {

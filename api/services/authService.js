@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const login = async (email, password) => {
     try {
-        const user = await User.findOne({ email: email }).exec();
+        const user = await User.findOne({ email: email });
 
         if (!user) {
             return { success: false, message: 'User not found!' };
@@ -21,14 +21,14 @@ const login = async (email, password) => {
     }
 }
 
-const register = async (first_name, last_name, email, password, phone) => {
+const register = async (firstName, lastName, email, password, phone) => {
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = await User.create({
-            first_name,
-            last_name,
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
             phone
@@ -43,7 +43,7 @@ const register = async (first_name, last_name, email, password, phone) => {
         if (error.code === 11000 && error.keyPattern && error.keyPattern.email === 1) {
             return { success: false, message: "User with this email already exists!" };
         } else {
-            throw new Error("Error creating a new restaurant!");
+            throw new Error("Error registering a new user!");
         }
     }
 }
