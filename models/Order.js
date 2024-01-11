@@ -35,20 +35,7 @@ const setDefaultSearchFilter = function(next) {
     next();
 };
 
-const setDefaultDeleteFilter = function(next) {
-    this.isDeleted = true;
-    this.save();
-    next();
-};
-
-// Middlewares
 orderSchema.pre(['find', 'findOne', 'findOneAndReplace', 'findOneAndUpdate'], setDefaultSearchFilter);
-
-orderSchema.pre(['deleteOne', 'findOneAndDelete'], setDefaultDeleteFilter);
-
-orderSchema.pre('deleteMany', function(next) {
-    next(new Error('Deletion prevented for deleteMany.'));
-});
 
 const Order = mongoose.model('Order', orderSchema);
 

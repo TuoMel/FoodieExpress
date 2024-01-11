@@ -18,14 +18,6 @@ const menuItemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    isSeasonal: {
-        type: Boolean,
-        default: false
-    },
-    seasonalPeriods: [{
-        startDate: Date,
-        endDate: Date
-    }],
     isDeleted: {
         type: Boolean,
         default: false
@@ -33,6 +25,14 @@ const menuItemSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+const setDefaultSearchFilter = function(next) {
+    this.where({ isDeleted: false });
+    next();
+};
+
+// Middlewares
+menuItemSchema.pre(['find', 'findOne', 'findOneAndReplace', 'findOneAndUpdate'], setDefaultSearchFilter);
 
 const MenuItem = mongoose.model('MenuItem', menuItemSchema);
 
