@@ -129,6 +129,97 @@ const deleteRestaurant = async (req, res) => {
     }
 }
 
+const getMenu = async (req, res) => {
+    const restaurantId = req.params.id;
+
+    if (!restaurantId) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.getMenu(restaurantId);
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(200).json({ message: 'Menu fetched successfully!', data: result.data });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
+const createMenuItem = async (req, res) => {
+    const restaurantId = req.params.id;
+    const { name, description, price } = req.body;
+
+    if (!restaurantId || !name || !description || !price) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.createMenuItem(restaurantId, name, description, price);
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(201).json({ message: 'New menu item created successfully!' });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
+const updateMenuItem = async (req, res) => {
+    const restaurantId = req.params.id;
+    const menuItemId = req.params.itemId;
+    const { name, description, price } = req.body;
+
+    if (!restaurantId || !menuItemId || !name || !description || !price) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.updateMenuItem(restaurantId, menuItemId, name, description, price)
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(201).json({ message: 'Menu item updated successfully!' });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
+const deleteMenuItem = async (req, res) => {
+    const menuItemId = req.params.itemId;
+
+    if (!menuItemId) {
+        return res.status(400).json({ message: 'Missing required data!' });
+    }
+
+    try {
+        const result = await restaurantService.deleteMenuItem(menuItemId)
+
+        if (!result.success) {
+            return res.status(404).json({ message: result.message });
+        }
+
+        return res.status(201).json({ message: 'Menu item deleted successfully!' });
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || 'Internal server error'
+        });
+    }
+}
+
 
 module.exports = {
     getAllRestaurants,
@@ -136,5 +227,9 @@ module.exports = {
     createRestaurant,
     modifyRestaurantInfo,
     modifyRestaurantHours,
-    deleteRestaurant
+    deleteRestaurant,
+    getMenu,
+    createMenuItem,
+    updateMenuItem,
+    deleteMenuItem
 }
