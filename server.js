@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const restaurantRouter = require('./api/routes/restaurantRouter')
 const authRouter = require('./api/routes/authRouter')
 const userRouter = require('./api/routes/userRouter')
@@ -17,6 +18,7 @@ require('dotenv').config()
 //Middleware//
 //////////////
 app.use(cors())
+app.use(cookieParser())
 app.use(bodyParser.json())
 
 

@@ -1,5 +1,6 @@
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const login = async (email, password) => {
     try {
@@ -15,7 +16,11 @@ const login = async (email, password) => {
             return { success: false, message: 'Incorrect password!' };
         }
 
-        return { success: true, message: 'User logged in successfully!' };
+        if (result) {
+            const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
+
+            return { success: true, message: 'User logged in successfully!', accessToken};
+        }
     } catch (error) {
         throw new Error('Error logging in user!');
     }
