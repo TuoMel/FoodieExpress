@@ -10,7 +10,7 @@ const api = axios.create({
 
 export const register = async (first_name, last_name, email, phone, password) => {
     try {
-        const result = await api.post('/user/signup', {
+        const result = await api.post('/auth/register', {
             first_name,
             last_name,
             email,
